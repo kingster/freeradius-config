@@ -1,0 +1,55 @@
+server mamabhanja {
+
+	listen {
+		ipaddr = *
+		port = 1821
+		type = auth
+	}
+
+	client 10.42.0.42 {
+		shortname	= cisco-client
+		secret		= rad123
+	}
+
+	client localhost {
+		shortname  	= localhost
+		secret 		= testing123
+	}
+
+	authorize {
+		filter_username
+		#filter_password
+		preprocess
+		mschap
+		suffix
+
+		eap {
+			ok = return
+		}
+
+		files
+		pap
+
+	}
+
+	authenticate {
+		Auth-Type MS-CHAP {
+			mschap
+		}
+		mschap
+		eap
+	}
+
+	post-auth {
+
+		Post-Auth-Type Reject {
+			attr_filter.access_reject
+			eap
+			update reply {
+				&Reply-Message = 'Invalid username/password'
+			}
+			remove_reply_message_if_eap
+		}
+	}
+
+}
