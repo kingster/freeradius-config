@@ -1,0 +1,41 @@
+eap {
+  ...
+  ## EAP-PEAP
+  
+  tls-config tls-duskdew {
+
+		private_key_file = ${certdir}/home.duskdew.com.key
+		certificate_file = ${certdir}/home.duskdew.com.pem
+		# ca_file = ${cadir}/
+		dh_file = ${certdir}/dh
+		ca_path = ${cadir}
+		cipher_list = "HIGH"
+		ecdh_curve = "prime256v1"
+
+		cache {
+			enable = yes
+			lifetime = 24 # hours
+			max_entries = 255
+		}
+
+		verify {
+		}
+
+		ocsp {
+			enable = no
+			override_cert_url = yes
+			url = "http://127.0.0.1/ocsp/"
+		}
+
+	}
+  
+  peap {
+		tls = tls-duskdew
+		default_eap_type = mschapv2
+		copy_request_to_tunnel = no
+		use_tunneled_reply = no
+		virtual_server = "inner-tunnel"
+	}
+  .....
+  
+}
